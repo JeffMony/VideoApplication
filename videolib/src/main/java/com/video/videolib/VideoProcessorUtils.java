@@ -1,12 +1,20 @@
 package com.video.videolib;
 
+import android.graphics.Bitmap;
 import android.media.MediaCodec;
 import android.media.MediaExtractor;
 import android.media.MediaFormat;
+import android.media.MediaMetadataRetriever;
 import android.media.MediaMuxer;
 
+import com.video.videolib.callback.IVideoProcessorListener;
+
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 public class VideoProcessorUtils {
 
@@ -438,7 +446,7 @@ public class VideoProcessorUtils {
         return true;
     }
 
-    public static boolean reverseVideo(String inputPath, String outputPath) throws IOException {
+    public static boolean transcodeVideo(String inputPath, String outputPath, IVideoProcessorListener listener) throws IOException {
         MediaMuxer mediaMuxer = null;
         mediaMuxer = new MediaMuxer(outputPath, MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4);
 
@@ -465,25 +473,137 @@ public class VideoProcessorUtils {
         mediaMuxer.start();
 
         mediaExtractor.selectTrack(sourceVideoTrack);
+        ByteBuffer buffer = ByteBuffer.allocate(500 * 1024);
         MediaCodec.BufferInfo info = new MediaCodec.BufferInfo();
         info.presentationTimeUs = 0;
-        ByteBuffer buffer = ByteBuffer.allocate(500 * 1024);
         int sampleSize = 0;
-        while((sampleSize = mediaExtractor.readSampleData(buffer, 0)) > 0) {
-            info.offset = 0;
-            info.size = sampleSize;
-            info.flags = mediaExtractor.getSampleFlags();
-            info.presentationTimeUs = duration - mediaExtractor.getSampleTime();
-            if (info.presentationTimeUs >= 0) {
-                mediaMuxer.writeSampleData(videoTrackIndex, buffer, info);
+        while ((sampleSize = mediaExtractor.readSampleData(buffer, 0)) > 0) {
+            int flags = mediaExtractor.getSampleFlags();
+
+            if (flags > 0 && (flags & MediaExtractor.SAMPLE_FLAG_SYNC) != 0) {
+
+            } else {
+                flags |= MediaExtractor.SAMPLE_FLAG_SYNC;
             }
+            info.offset = 0;
+            info.flags = flags;
+            info.size = sampleSize;
+            info.presentationTimeUs = mediaExtractor.getSampleTime();
+            mediaMuxer.writeSampleData(videoTrackIndex, buffer, info);
             mediaExtractor.advance();
         }
 
         mediaExtractor.release();
         mediaMuxer.stop();
         mediaMuxer.release();
+        listener.onProcessFinished(outputPath);
+        return true;
+    }
+
+    public static boolean reverseVideo(String inputPath, String outputPath) throws IOException {
+        MediaMuxer mediaMuxer = new MediaMuxer(outputPath, MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4);
+        MediaExtractor videoExtractor = new MediaExtractor();
+        videoExtractor.setDataSource(inputPath);
+
+        int sourceVideoTrack = -1;
+        int videoTrackIndex = -1;
+        for(int index = 0; index < videoExtractor.getTrackCount(); index++) {
+            MediaFormat format = videoExtractor.getTrackFormat(index);
+            String mime = format.getString(MediaFormat.KEY_MIME);
+            if (mime.startsWith("video/")) {
+                sourceVideoTrack = index;
+                videoTrackIndex = mediaMuxer.addTrack(format);
+                break;
+            }
+        }
+        if (mediaMuxer == null)
+            return false;
+
+        mediaMuxer.start();
+
+        List<Long> frameTimeList = new ArrayList<>();
+        videoExtractor.selectTrack(sourceVideoTrack);
+        ByteBuffer buffer = ByteBuffer.allocate(500 * 1024);
+        int sampleSize = 0;
+        while((sampleSize = videoExtractor.readSampleData(buffer, 0)) > 0) {
+            long sampleTime = videoExtractor.getSampleTime();
+            frameTimeList.add(sampleTime);
+        }
+
+        videoExtractor.release();
+        mediaMuxer.stop();
+        mediaMuxer.release();
 
         return true;
+    }
+
+    public static boolean printMediaInfo(String inputPath) throws IOException {
+        MediaExtractor mediaExtractor = new MediaExtractor();
+        mediaExtractor.setDataSource(inputPath);
+
+        for(int index = 0; index < mediaExtractor.getTrackCount(); index++) {
+            MediaFormat format = mediaExtractor.getTrackFormat(index);
+            LogUtils.d(format.toString());
+        }
+        return true;
+    }
+
+    public static boolean getKeyFrames(String inputPath) throws IOException {
+        MediaMetadataRetriever mRetriever = new MediaMetadataRetriever();
+        mRetriever.setDataSource(inputPath);
+
+        MediaExtractor mediaExtractor = new MediaExtractor();
+        mediaExtractor.setDataSource(inputPath);
+
+        int sourceVideoTrack = -1;
+        for (int index=0; index < mediaExtractor.getTrackCount(); index++) {
+            MediaFormat format = mediaExtractor.getTrackFormat(index);
+            String mime = format.getString(MediaFormat.KEY_MIME);
+            if (mime.startsWith("video/")) {
+                sourceVideoTrack = index;
+                break;
+            }
+        }
+
+        if (sourceVideoTrack == -1)
+            return false;
+
+        mediaExtractor.selectTrack(sourceVideoTrack);
+        ByteBuffer buffer = ByteBuffer.allocate(500 * 1024);
+        List<Long> frameTimeList = new ArrayList<>();
+        int sampleSize = 0;
+        while((sampleSize = mediaExtractor.readSampleData(buffer, 0)) > 0) {
+            int flags = mediaExtractor.getSampleFlags();
+            if (flags > 0 && (flags & MediaExtractor.SAMPLE_FLAG_SYNC) != 0) {
+                frameTimeList.add(mediaExtractor.getSampleTime());
+            }
+            mediaExtractor.advance();
+        }
+        LogUtils.d("getKeyFrames keyFrameCount = " + frameTimeList.size());
+
+        String parentPath = (new File(inputPath)).getParent() + File.separator;
+        LogUtils.d("getKeyFrames parent Path="+parentPath);
+        for(int index = 0; index < frameTimeList.size(); index++) {
+            Bitmap bitmap = mRetriever.getFrameAtTime(frameTimeList.get(index), MediaMetadataRetriever.OPTION_CLOSEST_SYNC);
+            savePicFile(bitmap, parentPath + "test_pic_" + index + ".jpg");
+
+        }
+        return true;
+    }
+
+    private static void savePicFile(Bitmap bitmap, String savePath) throws IOException {
+        if (bitmap == null) {
+            LogUtils.d("savePicFile failed, bitmap is null.");
+            return;
+        }
+        LogUtils.d("savePicFile step 1, bitmap is not null.");
+        File file = new File(savePath);
+        if (!file.exists()) {
+            file.createNewFile();
+        }
+        FileOutputStream outputStream = new FileOutputStream(file);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+        outputStream.flush();
+        outputStream.close();
     }
 }
