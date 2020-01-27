@@ -1,0 +1,2 @@
+com.video.videolib
+string app_name

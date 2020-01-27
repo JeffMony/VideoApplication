@@ -1,0 +1,57 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    xmlns:dist="http://schemas.android.com/apk/distribution"
+4    package="com.video.application"
+5    android:versionCode="1"
+6    android:versionName="1.0" >
+7
+8    <uses-sdk
+9        android:minSdkVersion="19"
+9-->/home/jeffmony/sources/git/VideoApplication/app/src/main/AndroidManifest.xml
+10        android:targetSdkVersion="29" />
+10-->/home/jeffmony/sources/git/VideoApplication/app/src/main/AndroidManifest.xml
+11
+12    <dist:module dist:instant="true" />
+12-->/home/jeffmony/sources/git/VideoApplication/app/src/main/AndroidManifest.xml:6:5-40
+12-->/home/jeffmony/sources/git/VideoApplication/app/src/main/AndroidManifest.xml:6:18-37
+13
+14    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+14-->/home/jeffmony/sources/git/VideoApplication/app/src/main/AndroidManifest.xml:8:5-81
+14-->/home/jeffmony/sources/git/VideoApplication/app/src/main/AndroidManifest.xml:8:22-78
+15    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+15-->/home/jeffmony/sources/git/VideoApplication/app/src/main/AndroidManifest.xml:9:5-80
+15-->/home/jeffmony/sources/git/VideoApplication/app/src/main/AndroidManifest.xml:9:22-77
+16
+17    <application
+17-->/home/jeffmony/sources/git/VideoApplication/app/src/main/AndroidManifest.xml:11:5-24:19
+18        android:allowBackup="true"
+18-->/home/jeffmony/sources/git/VideoApplication/app/src/main/AndroidManifest.xml:12:9-35
+19        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+19-->[androidx.core:core:1.0.0] /home/jeffmony/.gradle/caches/transforms-2/files-2.1/246153fc0686d4ff78c8961ca91329b7/core-1.0.0/AndroidManifest.xml:22:18-86
+20        android:debuggable="true"
+21        android:icon="@mipmap/ic_launcher"
+21-->/home/jeffmony/sources/git/VideoApplication/app/src/main/AndroidManifest.xml:13:9-43
+22        android:label="@string/app_name"
+22-->/home/jeffmony/sources/git/VideoApplication/app/src/main/AndroidManifest.xml:14:9-41
+23        android:roundIcon="@mipmap/ic_launcher_round"
+23-->/home/jeffmony/sources/git/VideoApplication/app/src/main/AndroidManifest.xml:15:9-54
+24        android:supportsRtl="true"
+24-->/home/jeffmony/sources/git/VideoApplication/app/src/main/AndroidManifest.xml:16:9-35
+25        android:testOnly="true" >
+26        <activity android:name="com.video.application.MainActivity" >
+26-->/home/jeffmony/sources/git/VideoApplication/app/src/main/AndroidManifest.xml:17:9-23:20
+26-->/home/jeffmony/sources/git/VideoApplication/app/src/main/AndroidManifest.xml:17:19-47
+27            <intent-filter>
+27-->/home/jeffmony/sources/git/VideoApplication/app/src/main/AndroidManifest.xml:18:13-22:29
+28                <action android:name="android.intent.action.MAIN" />
+28-->/home/jeffmony/sources/git/VideoApplication/app/src/main/AndroidManifest.xml:19:17-69
+28-->/home/jeffmony/sources/git/VideoApplication/app/src/main/AndroidManifest.xml:19:25-66
+29
+30                <category android:name="android.intent.category.LAUNCHER" />
+30-->/home/jeffmony/sources/git/VideoApplication/app/src/main/AndroidManifest.xml:21:17-77
+30-->/home/jeffmony/sources/git/VideoApplication/app/src/main/AndroidManifest.xml:21:27-74
+31            </intent-filter>
+32        </activity>
+33    </application>
+34
+35</manifest>
