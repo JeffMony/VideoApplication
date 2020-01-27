@@ -545,6 +545,8 @@ public class VideoProcessorUtils {
             MediaFormat format = mediaExtractor.getTrackFormat(index);
             LogUtils.d(format.toString());
         }
+
+        mediaExtractor.release();
         return true;
     }
 
@@ -588,6 +590,8 @@ public class VideoProcessorUtils {
             savePicFile(bitmap, parentPath + "test_pic_" + index + ".jpg");
 
         }
+        mediaExtractor.release();
+        mRetriever.release();
         return true;
     }
 
