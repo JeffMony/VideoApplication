@@ -9,3 +9,5 @@
 #### 7.生成倒播的视频
 
 [视频编辑操作图示](./files/videoEdit.png)
+
+请关注简书：https://www.jianshu.com/p/cafac2b1c4fe
