@@ -1,4 +1,4 @@
-#Mon Jan 27 15:01:51 CST 2020
+#Mon Jan 27 20:00:09 CST 2020
 base.0=/home/jeffmony/sources/git/VideoApplication/app/build/intermediates/dex/debug/mergeDexDebug/out/classes.dex
 path.0=classes.dex
 renamed.0=classes.dex

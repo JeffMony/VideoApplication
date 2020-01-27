@@ -120,10 +120,12 @@ int id title 0x7f05002f
 int id top 0x7f050030
 int id video_append_view 0x7f050031
 int id video_clip_view 0x7f050032
-int id video_merge_view 0x7f050033
-int id video_outline_view 0x7f050034
-int id video_reverse_view 0x7f050035
-int id video_split_view 0x7f050036
+int id video_keyframe_view 0x7f050033
+int id video_merge_view 0x7f050034
+int id video_outline_view 0x7f050035
+int id video_print_view 0x7f050036
+int id video_reverse_view 0x7f050037
+int id video_split_view 0x7f050038
 int integer cancel_button_image_alpha 0x7f060000
 int integer status_bar_notification_info_maxnum 0x7f060001
 int layout activity_main 0x7f070000

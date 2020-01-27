@@ -366,10 +366,12 @@ public final class R {
     public static final int top=0x7f050030;
     public static final int video_append_view=0x7f050031;
     public static final int video_clip_view=0x7f050032;
-    public static final int video_merge_view=0x7f050033;
-    public static final int video_outline_view=0x7f050034;
-    public static final int video_reverse_view=0x7f050035;
-    public static final int video_split_view=0x7f050036;
+    public static final int video_keyframe_view=0x7f050033;
+    public static final int video_merge_view=0x7f050034;
+    public static final int video_outline_view=0x7f050035;
+    public static final int video_print_view=0x7f050036;
+    public static final int video_reverse_view=0x7f050037;
+    public static final int video_split_view=0x7f050038;
   }
   public static final class integer {
     public static final int cancel_button_image_alpha=0x7f060000;

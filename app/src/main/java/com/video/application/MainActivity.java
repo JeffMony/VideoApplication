@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat;
 
 import com.video.videolib.LogUtils;
 import com.video.videolib.VideoProcessorUtils;
+import com.video.videolib.callback.IVideoProcessorListener;
 
 import java.io.File;
 
@@ -35,13 +36,17 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private static final String INPUT_FILE2_PATH = ROOT_PATH + "test2.mp4";
     private static final String OUTPUT_APPEND_FILE_PATH = ROOT_PATH + "append.mp4";
 
+    private static final String INPUT_REVERSE_FILE_PATH = ROOT_PATH + "test1.mp4";
+    private static final String OUTPUT_TRANSCODE_FILE_PATH = ROOT_PATH + "transcode_video.mp4";
     private static final String OUTPUT_REVERSE_FILE_PATH = ROOT_PATH + "reverse_video.mp4";
 
+    private TextView mMediaPrintView;
     private TextView mVideoSplitView;
     private TextView mVideoClipView;
     private TextView mVideoMergeView;
     private TextView mVideoAppendView;
     private TextView mVideoReverseView;
+    private TextView mVideoKeyFrameView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,17 +57,21 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     private void initViews() {
+        mMediaPrintView = (TextView) findViewById(R.id.video_print_view);
         mVideoSplitView = (TextView) findViewById(R.id.video_split_view);
         mVideoClipView = (TextView) findViewById(R.id.video_clip_view);
         mVideoMergeView = (TextView) findViewById(R.id.video_merge_view);
         mVideoAppendView = (TextView) findViewById(R.id.video_append_view);
         mVideoReverseView = (TextView) findViewById(R.id.video_reverse_view);
+        mVideoKeyFrameView = (TextView) findViewById(R.id.video_keyframe_view);
 
+        mMediaPrintView.setOnClickListener(this);
         mVideoSplitView.setOnClickListener(this);
         mVideoClipView.setOnClickListener(this);
         mVideoMergeView.setOnClickListener(this);
         mVideoAppendView.setOnClickListener(this);
         mVideoReverseView.setOnClickListener(this);
+        mVideoKeyFrameView.setOnClickListener(this);
     }
 
     @Override
@@ -91,7 +100,20 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-        if (view == mVideoSplitView) {
+        if (view == mMediaPrintView) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        VideoProcessorUtils.printMediaInfo(OUTPUT_TRANSCODE_FILE_PATH);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        LogUtils.e("printMediaInfo failed, exception = " + e);
+                    }
+                }
+            }).start();
+        }
+        else if (view == mVideoSplitView) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -140,9 +162,32 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 @Override
                 public void run() {
                     try {
-                        VideoProcessorUtils.reverseVideo(INPUT_FILE_PATH, OUTPUT_REVERSE_FILE_PATH);
+                        VideoProcessorUtils.transcodeVideo(INPUT_REVERSE_FILE_PATH, OUTPUT_TRANSCODE_FILE_PATH, new IVideoProcessorListener() {
+                            @Override
+                            public void onProcessFinished(String outputPath) {
+                                try {
+                                    LogUtils.d("reverseVideo inputPath=" +outputPath);
+                                    VideoProcessorUtils.reverseVideo(outputPath, OUTPUT_REVERSE_FILE_PATH);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    LogUtils.e("reverseVideo failed, exception = " + e.getMessage());
+                                }
+                            }
+                        });
                     } catch (Exception e) {
-                        LogUtils.e("reverseVideo failed, exception = " + e);
+                        LogUtils.e("transcodeVideo failed, exception = " + e.getMessage());
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+        } else if (view == mVideoKeyFrameView) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        VideoProcessorUtils.getKeyFrames(INPUT_FILE_PATH);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
             }).start();

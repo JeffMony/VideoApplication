@@ -21,12 +21,21 @@
         android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/video_split_view"
+            android:id="@+id/video_print_view"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:textSize="20sp"
-            android:text="1.分离音频视频"/>
+            android:text="1.打印基本信息"/>
+
+        <TextView
+            android:id="@+id/video_split_view"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:textSize="20sp"
+            android:text="2.分离音频视频"/>
         
         <TextView
             android:id="@+id/video_clip_view"
@@ -34,7 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="20dp"
-            android:text="2.裁剪视频"
+            android:text="3.裁剪视频"
             android:textSize="20sp" />
 
         <TextView
@@ -43,7 +52,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="20dp"
-            android:text="3.音频视频合成"
+            android:text="4.音频视频合成"
             android:textSize="20sp" />
 
         <TextView
@@ -52,7 +61,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="20dp"
-            android:text="4.视频拼接"
+            android:text="5.视频拼接"
             android:textSize="20sp" />
 
         <TextView
@@ -61,7 +70,16 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="20dp"
-            android:text="5.反转视频"
+            android:text="6.反转视频"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/video_keyframe_view"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:text="7.提取关键帧"
             android:textSize="20sp" />
 
     </LinearLayout>

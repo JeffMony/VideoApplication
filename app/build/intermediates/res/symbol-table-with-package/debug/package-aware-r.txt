@@ -121,8 +121,10 @@ id title
 id top
 id video_append_view
 id video_clip_view
+id video_keyframe_view
 id video_merge_view
 id video_outline_view
+id video_print_view
 id video_reverse_view
 id video_split_view
 integer cancel_button_image_alpha
